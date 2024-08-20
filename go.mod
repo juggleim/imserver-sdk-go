@@ -1,4 +1,4 @@
-module juggleimsdk
+module imserver-sdk-go
 
 go 1.21.10
 
