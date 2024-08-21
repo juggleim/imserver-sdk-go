@@ -21,3 +21,16 @@ func (sdk *JuggleIMSdk) Register(user User) (*UserRegResp, ApiCode, string, erro
 	code, traceId, err := sdk.HttpCall(http.MethodPost, url, user, resp)
 	return resp, code, traceId, err
 }
+
+func (sdk *JuggleIMSdk) UpdateUser(user User) (ApiCode, string, error) {
+	url := sdk.ApiUrl + "/apigateway/users/update"
+	code, tranceId, err := sdk.HttpCall(http.MethodPost, url, user, nil)
+	return code, tranceId, err
+}
+
+func (sdk *JuggleIMSdk) QryUserInfo(userId string) (*User, ApiCode, string, error) {
+	url := sdk.ApiUrl + "/apigateway/users/info"
+	resp := &User{}
+	code, tranceId, err := sdk.HttpCall(http.MethodGet, url, nil, resp)
+	return resp, code, tranceId, err
+}
