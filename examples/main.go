@@ -2,7 +2,8 @@ package main
 
 import (
 	"fmt"
-	juggleimsdk "imserver-sdk-go"
+
+	juggleimsdk "github.com/juggleim/imserver-sdk-go"
 )
 
 func main() {
