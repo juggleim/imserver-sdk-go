@@ -15,13 +15,13 @@ type Message struct {
 }
 
 func (sdk *JuggleIMSdk) SendSystemMsg(msg Message) (ApiCode, string, error) {
-	url := sdk.ApiUrl + "apigateway/messages/system/send"
+	url := sdk.ApiUrl + "/apigateway/messages/system/send"
 	code, traceId, err := sdk.HttpCall(http.MethodPost, url, msg, nil)
 	return code, traceId, err
 }
 
 func (sdk *JuggleIMSdk) SendGroupMsg(msg Message) (ApiCode, string, error) {
-	url := sdk.ApiUrl + "apigateway/messages/group/send"
+	url := sdk.ApiUrl + "/apigateway/messages/group/send"
 	code, traceId, err := sdk.HttpCall(http.MethodPost, url, msg, nil)
 	return code, traceId, err
 }

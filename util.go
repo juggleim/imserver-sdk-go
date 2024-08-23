@@ -51,16 +51,18 @@ func (sdk *JuggleIMSdk) HttpCall(method, url string, req interface{}, resp inter
 	headers := sdk.getHeaders()
 	var respBs []byte
 	var err error
+	var body string = ""
 	if method == http.MethodPost {
 		bodyBs, _ := json.Marshal(req)
-		respBs, err = HttpDoBytes(http.MethodPost, url, headers, string(bodyBs))
-		if err != nil {
-			return ApiCode_HttpTimeout, traceId, err
-		}
+		body = string(bodyBs)
 	} else if method == http.MethodGet {
-
 	} else {
 		return ApiCode_NotSupportMethod, traceId, fmt.Errorf("not support method:%s", method)
+	}
+
+	respBs, err = HttpDoBytes(method, url, headers, body)
+	if err != nil {
+		return ApiCode_HttpTimeout, traceId, err
 	}
 	apiResp := &ApiResp{
 		Data: resp,

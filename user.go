@@ -29,7 +29,7 @@ func (sdk *JuggleIMSdk) UpdateUser(user User) (ApiCode, string, error) {
 }
 
 func (sdk *JuggleIMSdk) QryUserInfo(userId string) (*User, ApiCode, string, error) {
-	url := sdk.ApiUrl + "/apigateway/users/info"
+	url := sdk.ApiUrl + "/apigateway/users/info?user_id=" + userId
 	resp := &User{}
 	code, tranceId, err := sdk.HttpCall(http.MethodGet, url, nil, resp)
 	return resp, code, tranceId, err
