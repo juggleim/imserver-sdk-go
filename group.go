@@ -10,8 +10,8 @@ type GroupMembersReq struct {
 }
 
 func (sdk *JuggleIMSdk) CreateGroup(groupMembers GroupMembersReq) (ApiCode, string, error) {
-	url := sdk.ApiUrl + "/apigateway/groups/add"
-	code, traceId, err := sdk.HttpCall(http.MethodPost, url, groupMembers, nil)
+	urlPath := "/apigateway/groups/add"
+	code, traceId, err := sdk.HttpCall(http.MethodPost, urlPath, groupMembers, nil)
 	return code, traceId, err
 }
 
@@ -20,8 +20,8 @@ func (sdk *JuggleIMSdk) GroupAddMembers(groupMembers GroupMembersReq) (ApiCode, 
 }
 
 func (sdk *JuggleIMSdk) GroupDelMembers(groupMembers GroupMembersReq) (ApiCode, string, error) {
-	url := sdk.ApiUrl + "/apigateway/groups/members/del"
-	code, traceId, err := sdk.HttpCall(http.MethodPost, url, groupMembers, nil)
+	urlPath := "/apigateway/groups/members/del"
+	code, traceId, err := sdk.HttpCall(http.MethodPost, urlPath, groupMembers, nil)
 	return code, traceId, err
 }
 
@@ -35,15 +35,15 @@ type GroupInfo struct {
 }
 
 func (sdk *JuggleIMSdk) DissolveGroup(groupId string) (ApiCode, string, error) {
-	url := sdk.ApiUrl + "/apigateway/groups/del"
-	code, traceId, err := sdk.HttpCall(http.MethodPost, url, &GroupInfo{
+	urlPath := "/apigateway/groups/del"
+	code, traceId, err := sdk.HttpCall(http.MethodPost, urlPath, &GroupInfo{
 		GroupId: groupId,
 	}, nil)
 	return code, traceId, err
 }
 
 func (sdk *JuggleIMSdk) UpdateGroup(grpInfo GroupInfo) (ApiCode, string, error) {
-	url := sdk.ApiUrl + "/apigateway/groups/update"
-	code, traceId, err := sdk.HttpCall(http.MethodPost, url, &grpInfo, nil)
+	urlPath := "/apigateway/groups/update"
+	code, traceId, err := sdk.HttpCall(http.MethodPost, urlPath, &grpInfo, nil)
 	return code, traceId, err
 }

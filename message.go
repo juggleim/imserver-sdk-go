@@ -15,23 +15,23 @@ type Message struct {
 }
 
 func (sdk *JuggleIMSdk) SendPrivateMsg(msg Message) (ApiCode, string, error) {
-	url := sdk.ApiUrl + "/apigateway/messages/private/send"
-	return sdk.HttpCall(http.MethodPost, url, msg, nil)
+	urlPath := "/apigateway/messages/private/send"
+	return sdk.HttpCall(http.MethodPost, urlPath, msg, nil)
 }
 
 func (sdk *JuggleIMSdk) SendSystemMsg(msg Message) (ApiCode, string, error) {
-	url := sdk.ApiUrl + "/apigateway/messages/system/send"
-	code, traceId, err := sdk.HttpCall(http.MethodPost, url, msg, nil)
+	urlPath := "/apigateway/messages/system/send"
+	code, traceId, err := sdk.HttpCall(http.MethodPost, urlPath, msg, nil)
 	return code, traceId, err
 }
 
 func (sdk *JuggleIMSdk) SendGroupMsg(msg Message) (ApiCode, string, error) {
-	url := sdk.ApiUrl + "/apigateway/messages/group/send"
-	code, traceId, err := sdk.HttpCall(http.MethodPost, url, msg, nil)
+	urlPath := "/apigateway/messages/group/send"
+	code, traceId, err := sdk.HttpCall(http.MethodPost, urlPath, msg, nil)
 	return code, traceId, err
 }
 
 func (sdk *JuggleIMSdk) SendChatroomMsg(msg Message) (ApiCode, string, error) {
-	url := sdk.ApiUrl + "/apigateway/messages/chatroom/send"
-	return sdk.HttpCall(http.MethodPost, url, msg, nil)
+	urlPath := "/apigateway/messages/chatroom/send"
+	return sdk.HttpCall(http.MethodPost, urlPath, msg, nil)
 }

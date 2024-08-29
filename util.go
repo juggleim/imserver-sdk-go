@@ -41,12 +41,8 @@ func SHA1(s string) string {
 	return hex.EncodeToString(o.Sum(nil))
 }
 
-func HttpDo(method, url string, header map[string]string, body string) (string, error) {
-	bs, err := HttpDoBytes(method, url, header, body)
-	return string(bs), err
-}
-
-func (sdk *JuggleIMSdk) HttpCall(method, url string, req interface{}, resp interface{}) (ApiCode, string, error) {
+func (sdk *JuggleIMSdk) HttpCall(method, urlPath string, req interface{}, resp interface{}) (ApiCode, string, error) {
+	url := sdk.ApiUrl + urlPath
 	traceId := GenerateUUIDShort11()
 	headers := sdk.getHeaders()
 	var respBs []byte
