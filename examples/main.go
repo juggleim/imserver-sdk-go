@@ -13,5 +13,4 @@ func main() {
 		UserId: "userid1",
 	})
 	fmt.Println(resp, code, trace, err)
-
 }
