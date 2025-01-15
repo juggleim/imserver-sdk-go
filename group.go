@@ -47,3 +47,10 @@ func (sdk *JuggleIMSdk) UpdateGroup(grpInfo GroupInfo) (ApiCode, string, error) 
 	code, traceId, err := sdk.HttpCall(http.MethodPost, urlPath, &grpInfo, nil)
 	return code, traceId, err
 }
+
+func (sdk *JuggleIMSdk) QryGroupInfo(grpId string) (*GroupInfo, ApiCode, string, error) {
+	urlPath := "/apigateway/groups/info?group_id=" + grpId
+	resp := &GroupInfo{}
+	code, traceId, err := sdk.HttpCall(http.MethodGet, urlPath, nil, resp)
+	return resp, code, traceId, err
+}
