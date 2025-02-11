@@ -54,3 +54,23 @@ func (sdk *JuggleIMSdk) QryGroupInfo(grpId string) (*GroupInfo, ApiCode, string,
 	code, traceId, err := sdk.HttpCall(http.MethodGet, urlPath, nil, resp)
 	return resp, code, traceId, err
 }
+
+type GroupMembers struct {
+	Items  []*GroupMember `json:"items"`
+	Offset string         `json:"offset"`
+}
+
+type GroupMember struct {
+	MemberId       string            `json:"member_id"`
+	IsMute         int               `json:"is_mute"`
+	IsAllow        int               `json:"is_allow"`
+	GrpDisplayName string            `json:"grp_display_name"`
+	ExtFields      map[string]string `json:"ext_fields"`
+}
+
+func (sdk *JuggleIMSdk) QryGroupMembers(grpId string, limit int, offset string) (*GroupMembers, ApiCode, string, error) {
+	urlPath := "/apigateway/groups/members/query?group_id=" + grpId
+	resp := &GroupMembers{}
+	code, traceId, err := sdk.HttpCall(http.MethodGet, urlPath, nil, resp)
+	return resp, code, traceId, err
+}

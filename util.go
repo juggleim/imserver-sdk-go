@@ -176,3 +176,11 @@ func toIdString(l uint64) string {
 func BytesToUInt64(buf []byte) uint64 {
 	return binary.BigEndian.Uint64(buf)
 }
+
+func ToJson(obj interface{}) string {
+	bs, err := json.Marshal(obj)
+	if err != nil {
+		return ""
+	}
+	return string(bs)
+}
