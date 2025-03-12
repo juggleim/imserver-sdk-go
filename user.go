@@ -10,6 +10,7 @@ type User struct {
 	UserPortrait string            `json:"user_portrait"`
 	ExtFields    map[string]string `json:"ext_fields"`
 }
+
 type UserRegResp struct {
 	UserId string `json:"user_id"`
 	Token  string `json:"token"`
