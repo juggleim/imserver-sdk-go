@@ -32,6 +32,7 @@ type GroupInfo struct {
 	IsMute        int               `json:"is_mute"`
 	UpdatedTime   int64             `json:"updated_time"`
 	ExtFields     map[string]string `json:"ext_fields"`
+	Settings      map[string]string `json:"settings"`
 }
 
 func (sdk *JuggleIMSdk) DissolveGroup(groupId string) (ApiCode, string, error) {
@@ -71,6 +72,32 @@ type GroupMember struct {
 func (sdk *JuggleIMSdk) QryGroupMembers(grpId string, limit int, offset string) (*GroupMembers, ApiCode, string, error) {
 	urlPath := "/apigateway/groups/members/query?group_id=" + grpId
 	resp := &GroupMembers{}
+	code, traceId, err := sdk.HttpCall(http.MethodGet, urlPath, nil, resp)
+	return resp, code, traceId, err
+}
+
+type GroupMuteReq struct {
+	GrouopId string `json:"group_id"`
+	IsMute   int    `json:"is_mute"`
+}
+
+func (sdk *JuggleIMSdk) SetGroupMute(grpId string, isMute int) (ApiCode, string, error) {
+	urlPath := "/apigateway/groups/groupmute/set"
+	code, traceId, err := sdk.HttpCall(http.MethodPost, urlPath, &GroupMuteReq{
+		GrouopId: grpId,
+		IsMute:   isMute,
+	}, nil)
+	return code, traceId, err
+}
+
+func (sdk *JuggleIMSdk) SetGroupSettings(grp GroupInfo) (ApiCode, string, error) {
+	urlPath := "/apigateway/groups/settings/set"
+	return sdk.HttpCall(http.MethodPost, urlPath, grp, nil)
+}
+
+func (sdk *JuggleIMSdk) GetGroupSettings(grpId string) (*GroupInfo, ApiCode, string, error) {
+	urlPath := "/apigateway/groups/settings/get"
+	resp := &GroupInfo{}
 	code, traceId, err := sdk.HttpCall(http.MethodGet, urlPath, nil, resp)
 	return resp, code, traceId, err
 }

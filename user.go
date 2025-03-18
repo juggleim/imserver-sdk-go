@@ -53,6 +53,6 @@ func (sdk *JuggleIMSdk) SetUserSettings(user User) (ApiCode, string, error) {
 func (sdk *JuggleIMSdk) GetUserSettings(userId string) (*User, ApiCode, string, error) {
 	urlPath := "/apigateway/users/settings/get?user_id=" + userId
 	resp := &User{}
-	code, tranceId, err := sdk.HttpCall(http.MethodGet, urlPath, nil, resp)
-	return resp, code, tranceId, err
+	code, traceId, err := sdk.HttpCall(http.MethodGet, urlPath, nil, resp)
+	return resp, code, traceId, err
 }

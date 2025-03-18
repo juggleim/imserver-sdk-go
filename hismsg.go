@@ -30,8 +30,15 @@ type HisMsg struct {
 	IsCount   *bool `json:"is_count,omitempty"`
 }
 
-func (sdk *JuggleIMSdk) QryHisMsgs(userId string, targetId string, channelType ChannelType) (*HisMsgs, ApiCode, string, error) {
-	urlPath := fmt.Sprintf("/apigateway/hismsgs/query?channel_type=%d&from_id=%s&target_id=%s", channelType, userId, targetId)
+func (sdk *JuggleIMSdk) QryHisMsgs(userId string, targetId string, channelType ChannelType, startTime int64, count int, isPositive bool) (*HisMsgs, ApiCode, string, error) {
+	if count < 0 || count > 50 {
+		count = 50
+	}
+	order := 0
+	if isPositive {
+		order = 1
+	}
+	urlPath := fmt.Sprintf("/apigateway/hismsgs/query?channel_type=%d&from_id=%s&target_id=%s&count=%d&order=%d&start=%d", channelType, userId, targetId, count, order, startTime)
 	resp := &HisMsgs{}
 	code, traceId, err := sdk.HttpCall(http.MethodGet, urlPath, nil, resp)
 	return resp, code, traceId, err
