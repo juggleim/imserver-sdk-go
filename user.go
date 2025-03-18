@@ -9,6 +9,7 @@ type User struct {
 	Nickname     string            `json:"nickname"`
 	UserPortrait string            `json:"user_portrait"`
 	ExtFields    map[string]string `json:"ext_fields"`
+	Settings     map[string]string `json:"settings"`
 }
 
 type UserRegResp struct {
@@ -31,6 +32,19 @@ func (sdk *JuggleIMSdk) UpdateUser(user User) (ApiCode, string, error) {
 
 func (sdk *JuggleIMSdk) QryUserInfo(userId string) (*User, ApiCode, string, error) {
 	urlPath := "/apigateway/users/info?user_id=" + userId
+	resp := &User{}
+	code, tranceId, err := sdk.HttpCall(http.MethodGet, urlPath, nil, resp)
+	return resp, code, tranceId, err
+}
+
+func (sdk *JuggleIMSdk) SetUserSettings(user User) (ApiCode, string, error) {
+	urlPath := "/apigateway/users/settings/set"
+	code, tranceId, err := sdk.HttpCall(http.MethodPost, urlPath, user, nil)
+	return code, tranceId, err
+}
+
+func (sdk *JuggleIMSdk) GetUserSettings(userId string) (*User, ApiCode, string, error) {
+	urlPath := "/apigateway/users/settings/get?user_id=" + userId
 	resp := &User{}
 	code, tranceId, err := sdk.HttpCall(http.MethodGet, urlPath, nil, resp)
 	return resp, code, tranceId, err
