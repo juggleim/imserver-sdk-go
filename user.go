@@ -4,12 +4,19 @@ import (
 	"net/http"
 )
 
+type UserSettingKey string
+
+const (
+	UserSettingKey_Language  UserSettingKey = "language"
+	UserSettingKey_Undisturb UserSettingKey = "undisturb"
+)
+
 type User struct {
-	UserId       string            `json:"user_id"`
-	Nickname     string            `json:"nickname"`
-	UserPortrait string            `json:"user_portrait"`
-	ExtFields    map[string]string `json:"ext_fields"`
-	Settings     map[string]string `json:"settings"`
+	UserId       string                    `json:"user_id"`
+	Nickname     string                    `json:"nickname"`
+	UserPortrait string                    `json:"user_portrait"`
+	ExtFields    map[string]string         `json:"ext_fields"`
+	Settings     map[UserSettingKey]string `json:"settings"`
 }
 
 type UserRegResp struct {
