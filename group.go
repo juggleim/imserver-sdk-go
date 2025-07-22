@@ -77,15 +77,31 @@ func (sdk *JuggleIMSdk) QryGroupMembers(grpId string, limit int, offset string) 
 }
 
 type GroupMuteReq struct {
-	GrouopId string `json:"group_id"`
-	IsMute   int    `json:"is_mute"`
+	GroupId string `json:"group_id"`
+	IsMute  int    `json:"is_mute"`
 }
 
 func (sdk *JuggleIMSdk) SetGroupMute(grpId string, isMute int) (ApiCode, string, error) {
 	urlPath := "/apigateway/groups/groupmute/set"
 	code, traceId, err := sdk.HttpCall(http.MethodPost, urlPath, &GroupMuteReq{
-		GrouopId: grpId,
-		IsMute:   isMute,
+		GroupId: grpId,
+		IsMute:  isMute,
+	}, nil)
+	return code, traceId, err
+}
+
+type GroupMembersMuteReq struct {
+	GroupId   string   `json:"group_id"`
+	MemberIds []string `json:"member_ids"`
+	IsMute    int      `json:"is_mute"`
+}
+
+func (sdk *JuggleIMSdk) SetGroupMembersMute(grpId string, isMute int, memberIds []string) (ApiCode, string, error) {
+	urlPath := "/apigateway/groups/groupmembermute/set"
+	code, traceId, err := sdk.HttpCall(http.MethodPost, urlPath, &GroupMembersMuteReq{
+		GroupId:   grpId,
+		IsMute:    isMute,
+		MemberIds: memberIds,
 	}, nil)
 	return code, traceId, err
 }
