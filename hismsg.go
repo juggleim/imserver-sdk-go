@@ -43,3 +43,38 @@ func (sdk *JuggleIMSdk) QryHisMsgs(userId string, targetId string, channelType C
 	code, traceId, err := sdk.HttpCall(http.MethodGet, urlPath, nil, resp)
 	return resp, code, traceId, err
 }
+
+type RecallMsgReq struct {
+	FromId      string            `json:"from_id"`
+	TargetId    string            `json:"target_id"`
+	ChannelType int32             `json:"channel_type"`
+	MsgId       string            `json:"msg_id"`
+	MsgTime     int64             `json:"msg_time"`
+	Exts        map[string]string `json:"exts"`
+}
+
+func (sdk *JuggleIMSdk) RecallMsg(recall *RecallMsgReq) (ApiCode, string, error) {
+	urlPath := "/apigateway/hismsgs/recall"
+	code, traceId, err := sdk.HttpCall(http.MethodPost, urlPath, recall, nil)
+	return code, traceId, err
+}
+
+type DelMsgsReq struct {
+	FromId      string       `json:"from_id"`
+	TargetId    string       `json:"target_id"`
+	ChannelType int32        `json:"channel_type"`
+	DelScope    int          `json:"del_scope"`
+	Msgs        []*SimpleMsg `json:"msgs"`
+}
+
+type SimpleMsg struct {
+	MsgId        string `json:"msg_id"`
+	MsgTime      int64  `json:"msg_time"`
+	MsgReadIndex int64  `json:"msg_read_index"`
+}
+
+func (sdk *JuggleIMSdk) DelMsgs(delMsgs *DelMsgsReq) (ApiCode, string, error) {
+	urlPath := "/apigateway/hismsgs/del"
+	code, traceId, err := sdk.HttpCall(http.MethodPost, urlPath, delMsgs, nil)
+	return code, traceId, err
+}
