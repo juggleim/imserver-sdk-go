@@ -23,11 +23,17 @@ func (sdk *JuggleIMSdk) ClearUnread(convers *Conversations) (ApiCode, string, er
 	return code, traceId, err
 }
 
-func (sdk *JuggleIMSdk) QryGlobalConvers(startTime int64, count int) (*Conversations, ApiCode, string, error) {
+func (sdk *JuggleIMSdk) QryGlobalConvers(startTime int64, count int, targetId *string, channelType *int32) (*Conversations, ApiCode, string, error) {
 	if count < 0 || count > 50 {
 		count = 50
 	}
 	urlPath := fmt.Sprintf("/apigateway/globalconvers/query?start=%d&count=%d", startTime, count)
+	if targetId != nil && *targetId != "" {
+		urlPath = urlPath + fmt.Sprintf("&target_id=%s", *targetId)
+	}
+	if channelType != nil && *channelType > 0 {
+		urlPath = urlPath + fmt.Sprintf("&channel_type=%d", *channelType)
+	}
 	resp := &Conversations{}
 	code, traceId, err := sdk.HttpCall(http.MethodGet, urlPath, nil, resp)
 	return resp, code, traceId, err
