@@ -56,3 +56,25 @@ func (sdk *JuggleIMSdk) GetUserSettings(userId string) (*User, ApiCode, string, 
 	code, traceId, err := sdk.HttpCall(http.MethodGet, urlPath, nil, resp)
 	return resp, code, traceId, err
 }
+
+type UserOnlineStatusReq struct {
+	UserIds []string `json:"user_ids"`
+}
+
+type UserOnlineStatusResp struct {
+	Items []*UserOnlineStatusItem `json:"items"`
+}
+
+type UserOnlineStatusItem struct {
+	UserId   string `json:"user_id"`
+	IsOnline bool   `json:"is_online"`
+}
+
+func (sdk *JuggleIMSdk) QryUserOnlineStatus(userIds []string) (*UserOnlineStatusResp, ApiCode, string, error) {
+	urlPath := "/apigateway/users/onlinestatus/query"
+	resp := &UserOnlineStatusResp{}
+	code, traceId, err := sdk.HttpCall(http.MethodPost, urlPath, &UserOnlineStatusReq{
+		UserIds: userIds,
+	}, resp)
+	return resp, code, traceId, err
+}
