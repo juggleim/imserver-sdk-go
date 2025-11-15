@@ -1,7 +1,9 @@
 package juggleimsdk
 
 import (
+	"fmt"
 	"net/http"
+	"strings"
 )
 
 type UserSettingKey string
@@ -76,5 +78,55 @@ func (sdk *JuggleIMSdk) QryUserOnlineStatus(userIds []string) (*UserOnlineStatus
 	code, traceId, err := sdk.HttpCall(http.MethodPost, urlPath, &UserOnlineStatusReq{
 		UserIds: userIds,
 	}, resp)
+	return resp, code, traceId, err
+}
+
+type BanUser struct {
+	UserId        string `json:"user_id"`
+	CreatedTime   int64  `json:"created_time"`
+	EndTime       int64  `json:"end_time"`
+	EndTimeOffset int64  `json:"end_time_offset"`
+	ScopeKey      string `json:"scope_key"`
+	ScopeValue    string `json:"scope_value"`
+	Ext           string `json:"ext,omitempty"`
+}
+
+type BanUsers struct {
+	Items  []*BanUser `json:"items"`
+	Offset string     `json:"offset"`
+}
+
+func (sdk *JuggleIMSdk) BanUsers(banUsers *BanUsers) (ApiCode, string, error) {
+	urlPath := "/apigateway/users/banusers/ban"
+	code, tranceId, err := sdk.HttpCall(http.MethodPost, urlPath, banUsers, nil)
+	return code, tranceId, err
+}
+
+func (sdk *JuggleIMSdk) UnBanUsers(banUsers *BanUsers) (ApiCode, string, error) {
+	urlPath := "/apigateway/users/banusers/unban"
+	code, tranceId, err := sdk.HttpCall(http.MethodPost, urlPath, banUsers, nil)
+	return code, tranceId, err
+}
+
+func (sdk *JuggleIMSdk) QryBanUsers(limit int, offset string) (*BanUsers, ApiCode, string, error) {
+	urlPath := fmt.Sprintf("/apigateway/users/banusers/query?limit=%d&offset=%s", limit, offset)
+	resp := &BanUsers{}
+	code, traceId, err := sdk.HttpCall(http.MethodGet, urlPath, nil, resp)
+	return resp, code, traceId, err
+
+}
+
+func (sdk *JuggleIMSdk) QryBanUsersByUserIds(userIds []string) (*BanUsers, ApiCode, string, error) {
+	if len(userIds) <= 0 {
+		return nil, ApiCode_Success, "", nil
+	}
+	urlPath := "/apigateway/users/banusers/query"
+	idParams := []string{}
+	for _, userId := range userIds {
+		idParams = append(idParams, fmt.Sprintf("user_id=%s", userId))
+	}
+	urlPath = fmt.Sprintf("%s?%s", urlPath, strings.Join(idParams, "&"))
+	resp := &BanUsers{}
+	code, traceId, err := sdk.HttpCall(http.MethodGet, urlPath, nil, resp)
 	return resp, code, traceId, err
 }
