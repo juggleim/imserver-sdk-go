@@ -23,8 +23,9 @@ type BotInfo struct {
 	UpdatedTime int64             `json:"updated_time"`
 }
 
-func (sdk *JuggleIMSdk) RegisterBot(bot BotInfo) (ApiCode, string, error) {
+func (sdk *JuggleIMSdk) RegisterBot(bot BotInfo) (*UserRegResp, ApiCode, string, error) {
 	urlPath := "/apigateway/bots/register"
-	code, traceId, err := sdk.HttpCall(http.MethodPost, urlPath, bot, nil)
-	return code, traceId, err
+	resp := &UserRegResp{}
+	code, traceId, err := sdk.HttpCall(http.MethodPost, urlPath, bot, resp)
+	return resp, code, traceId, err
 }
