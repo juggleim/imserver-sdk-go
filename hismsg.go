@@ -26,6 +26,9 @@ type HisMsg struct {
 	MsgType     string `json:"msg_type"`
 	MsgContent  string `json:"msg_content"`
 
+	OriginalMsgType    string `json:"original_msg_type,omitempty"`
+	OriginalMsgContent string `json:"original_msg_content,omitempty"`
+
 	IsStorage *bool `json:"is_storage,omitempty"`
 	IsCount   *bool `json:"is_count,omitempty"`
 }
@@ -76,5 +79,49 @@ type SimpleMsg struct {
 func (sdk *JuggleIMSdk) DelMsgs(delMsgs *DelMsgsReq) (ApiCode, string, error) {
 	urlPath := "/apigateway/hismsgs/del"
 	code, traceId, err := sdk.HttpCall(http.MethodPost, urlPath, delMsgs, nil)
+	return code, traceId, err
+}
+
+func (sdk *JuggleIMSdk) QryHisMsgsByMsgIds(userId, targetId string, channelType ChannelType, msgId string) (*HisMsgs, ApiCode, string, error) {
+	urlPath := fmt.Sprintf("/apigateway/hismsgs/querybymsgids?channel_type=%d&from_id=%s&target_id=%s&msg_id=%s", channelType, userId, targetId, msgId)
+	resp := &HisMsgs{}
+	code, traceId, err := sdk.HttpCall(http.MethodGet, urlPath, nil, resp)
+	return resp, code, traceId, err
+}
+
+type CleanHisMsgsReq struct {
+	FromId          string `json:"from_id"`
+	TargetId        string `json:"target_id"`
+	ChannelType     int32  `json:"channel_type"`
+	CleanTime       int64  `json:"clean_time"`
+	CleanTimeOffset int64  `json:"clean_time_offset"`
+	CleanScope      int    `json:"clean_scope"`
+	SenderId        string `json:"sender_id,omitempty"`
+}
+
+func (sdk *JuggleIMSdk) CleanHisMsgs(req CleanHisMsgsReq) (ApiCode, string, error) {
+	urlPath := "/apigateway/hismsgs/clean"
+	code, traceId, err := sdk.HttpCall(http.MethodPost, urlPath, req, nil)
+	return code, traceId, err
+}
+
+type ModifyHisMsgReq struct {
+	FromId      string `json:"from_id"`
+	TargetId    string `json:"target_id"`
+	ChannelType int32  `json:"channel_type"`
+	MsgId       string `json:"msg_id"`
+	MsgType     string `json:"msg_type"`
+	MsgContent  string `json:"msg_content"`
+}
+
+func (sdk *JuggleIMSdk) ModifyHisMsg(req ModifyHisMsgReq) (ApiCode, string, error) {
+	urlPath := "/apigateway/hismsgs/modify"
+	code, traceId, err := sdk.HttpCall(http.MethodPost, urlPath, req, nil)
+	return code, traceId, err
+}
+
+func (sdk *JuggleIMSdk) ImportHisMsg(msg HisMsg) (ApiCode, string, error) {
+	urlPath := "/apigateway/hismsgs/import"
+	code, traceId, err := sdk.HttpCall(http.MethodPost, urlPath, msg, nil)
 	return code, traceId, err
 }

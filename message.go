@@ -4,9 +4,14 @@ import "net/http"
 
 type Message struct {
 	SenderId       string       `json:"sender_id"`
+	TargetId       string       `json:"target_id"`
+	ReceiverId     string       `json:"receiver_id"`
 	TargetIds      []string     `json:"target_ids"`
+	ToUserIds      []string     `json:"to_user_ids"`
 	MsgType        string       `json:"msg_type"`
 	MsgContent     string       `json:"msg_content"`
+	LifeTime          int64        `json:"life_time"`
+	LifeTimeAfterRead int64        `json:"life_time_after_read"`
 	IsStorage      *bool        `json:"is_storage"`
 	IsCount        *bool        `json:"is_count"`
 	IsNotifySender *bool        `json:"is_notify_sender"`
@@ -69,4 +74,117 @@ func (sdk *JuggleIMSdk) SendGroupMsg(msg Message) (ApiCode, string, error) {
 func (sdk *JuggleIMSdk) SendChatroomMsg(msg Message) (ApiCode, string, error) {
 	urlPath := "/apigateway/messages/chatroom/send"
 	return sdk.HttpCall(http.MethodPost, urlPath, msg, nil)
+}
+
+func (sdk *JuggleIMSdk) SendChatroomBrdMsg(msg Message) (ApiCode, string, error) {
+	urlPath := "/apigateway/messages/chatroom/broadcast"
+	code, traceId, err := sdk.HttpCall(http.MethodPost, urlPath, msg, nil)
+	return code, traceId, err
+}
+
+type TargetConver struct {
+	TargetId    string `json:"target_id"`
+	ChannelType int    `json:"channel_type"`
+}
+
+type SendGrpCastMsgReq struct {
+	SenderId      string          `json:"sender_id"`
+	TargetId      string          `json:"target_id"`
+	MsgType       string          `json:"msg_type"`
+	MsgContent    string          `json:"msg_content"`
+	TargetConvers []*TargetConver `json:"target_convers"`
+}
+
+func (sdk *JuggleIMSdk) SendGroupCastMsg(req SendGrpCastMsgReq) (ApiCode, string, error) {
+	urlPath := "/apigateway/messages/groupcast/send"
+	code, traceId, err := sdk.HttpCall(http.MethodPost, urlPath, req, nil)
+	return code, traceId, err
+}
+
+type SendBrdCastMsgReq struct {
+	SenderId   string `json:"sender_id"`
+	MsgType    string `json:"msg_type"`
+	MsgContent string `json:"msg_content"`
+	IsStorage  *bool  `json:"is_storage"`
+}
+
+func (sdk *JuggleIMSdk) SendBroadCastMsg(req SendBrdCastMsgReq) (ApiCode, string, error) {
+	urlPath := "/apigateway/messages/broadcast/send"
+	code, traceId, err := sdk.HttpCall(http.MethodPost, urlPath, req, nil)
+	return code, traceId, err
+}
+
+func (sdk *JuggleIMSdk) SendPublicChannelMsg(msg Message) (ApiCode, string, error) {
+	urlPath := "/apigateway/messages/publicchannel/send"
+	code, traceId, err := sdk.HttpCall(http.MethodPost, urlPath, msg, nil)
+	return code, traceId, err
+}
+
+type MarkReadReq struct {
+	UserId      string   `json:"user_id"`
+	TargetId    string   `json:"target_id"`
+	ChannelType int32    `json:"channel_type"`
+	MsgIds      []string `json:"msg_ids"`
+}
+
+func (sdk *JuggleIMSdk) MarkRead(req MarkReadReq) (ApiCode, string, error) {
+	urlPath := "/apigateway/messages/markread"
+	code, traceId, err := sdk.HttpCall(http.MethodPost, urlPath, req, nil)
+	return code, traceId, err
+}
+
+type StreamMsg struct {
+	MsgId          string `json:"msg_id"`
+	FromId         string `json:"from_id"`
+	TargetId       string `json:"target_id"`
+	PartialContent string `json:"partial_content"`
+	Seq            int    `json:"seq"`
+	IsFinished     bool   `json:"is_finished"`
+}
+
+type SendMsgRespItem struct {
+	TargetId string `json:"target_id,omitempty"`
+	MsgId    string `json:"msg_id"`
+}
+
+func (sdk *JuggleIMSdk) SendPrivateStreamMsg(msg StreamMsg) (*SendMsgRespItem, ApiCode, string, error) {
+	urlPath := "/apigateway/messages/private/stream/send"
+	resp := &SendMsgRespItem{}
+	code, traceId, err := sdk.HttpCall(http.MethodPost, urlPath, msg, resp)
+	return resp, code, traceId, err
+}
+
+func (sdk *JuggleIMSdk) SendPrivateMsgWithResp(msg Message) ([]*SendMsgRespItem, ApiCode, string, error) {
+	urlPath := "/apigateway/messages/private/send"
+	var resp []*SendMsgRespItem
+	code, traceId, err := sdk.HttpCall(http.MethodPost, urlPath, msg, &resp)
+	return resp, code, traceId, err
+}
+
+func (sdk *JuggleIMSdk) SendSystemMsgWithResp(msg Message) ([]*SendMsgRespItem, ApiCode, string, error) {
+	urlPath := "/apigateway/messages/system/send"
+	var resp []*SendMsgRespItem
+	code, traceId, err := sdk.HttpCall(http.MethodPost, urlPath, msg, &resp)
+	return resp, code, traceId, err
+}
+
+func (sdk *JuggleIMSdk) SendGroupMsgWithResp(msg Message) ([]*SendMsgRespItem, ApiCode, string, error) {
+	urlPath := "/apigateway/messages/group/send"
+	var resp []*SendMsgRespItem
+	code, traceId, err := sdk.HttpCall(http.MethodPost, urlPath, msg, &resp)
+	return resp, code, traceId, err
+}
+
+func (sdk *JuggleIMSdk) SendChatroomMsgWithResp(msg Message) ([]*SendMsgRespItem, ApiCode, string, error) {
+	urlPath := "/apigateway/messages/chatroom/send"
+	var resp []*SendMsgRespItem
+	code, traceId, err := sdk.HttpCall(http.MethodPost, urlPath, msg, &resp)
+	return resp, code, traceId, err
+}
+
+func (sdk *JuggleIMSdk) SendPublicChannelMsgWithResp(msg Message) ([]*SendMsgRespItem, ApiCode, string, error) {
+	urlPath := "/apigateway/messages/publicchannel/send"
+	var resp []*SendMsgRespItem
+	code, traceId, err := sdk.HttpCall(http.MethodPost, urlPath, msg, &resp)
+	return resp, code, traceId, err
 }

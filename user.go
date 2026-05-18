@@ -13,12 +13,22 @@ const (
 	UserSettingKey_Undisturb UserSettingKey = "undisturb"
 )
 
+type PermitConver struct {
+	TargetId       string `json:"target_id"`
+	TargetIdAlias  string `json:"target_id_alias"`
+	ChannelType    int    `json:"channel_type"`
+	MaxHisMsgCount int32  `json:"max_his_msg_count"`
+}
+
 type User struct {
-	UserId       string                    `json:"user_id"`
-	Nickname     string                    `json:"nickname"`
-	UserPortrait string                    `json:"user_portrait"`
-	ExtFields    map[string]string         `json:"ext_fields"`
-	Settings     map[UserSettingKey]string `json:"settings"`
+	UserId        string                    `json:"user_id"`
+	Nickname      string                    `json:"nickname"`
+	UserPortrait  string                    `json:"user_portrait"`
+	ExtFields     map[string]string         `json:"ext_fields"`
+	Settings      map[UserSettingKey]string `json:"settings"`
+	IsAdmin       bool                      `json:"is_admin"`
+	PermitConver  *PermitConver             `json:"permit_conver,omitempty"`
+	PermitConvers []*PermitConver           `json:"permit_convers,omitempty"`
 }
 
 type UserRegResp struct {
@@ -127,6 +137,54 @@ func (sdk *JuggleIMSdk) QryBanUsersByUserIds(userIds []string) (*BanUsers, ApiCo
 	}
 	urlPath = fmt.Sprintf("%s?%s", urlPath, strings.Join(idParams, "&"))
 	resp := &BanUsers{}
+	code, traceId, err := sdk.HttpCall(http.MethodGet, urlPath, nil, resp)
+	return resp, code, traceId, err
+}
+
+type KickUserReq struct {
+	UserId    string   `json:"user_id"`
+	Platforms []string `json:"platforms"`
+	DeviceIds []string `json:"device_ids"`
+	Ext       string   `json:"ext"`
+}
+
+func (sdk *JuggleIMSdk) KickUsers(req KickUserReq) (ApiCode, string, error) {
+	urlPath := "/apigateway/users/kick"
+	code, traceId, err := sdk.HttpCall(http.MethodPost, urlPath, req, nil)
+	return code, traceId, err
+}
+
+type BlockUsersReq struct {
+	UserId       string   `json:"user_id"`
+	BlockUserIds []string `json:"block_user_ids"`
+}
+
+type BlockUser struct {
+	BlockUserId string `json:"block_user_id"`
+	CreatedTime int64  `json:"createed_time"`
+}
+
+type QryBlockUsersResp struct {
+	UserId string       `json:"user_id"`
+	Items  []*BlockUser `json:"items"`
+	Offset string       `json:"offset"`
+}
+
+func (sdk *JuggleIMSdk) BlockUser(req BlockUsersReq) (ApiCode, string, error) {
+	urlPath := "/apigateway/users/blockusers/block"
+	code, traceId, err := sdk.HttpCall(http.MethodPost, urlPath, req, nil)
+	return code, traceId, err
+}
+
+func (sdk *JuggleIMSdk) UnBlockUser(req BlockUsersReq) (ApiCode, string, error) {
+	urlPath := "/apigateway/users/blockusers/unblock"
+	code, traceId, err := sdk.HttpCall(http.MethodPost, urlPath, req, nil)
+	return code, traceId, err
+}
+
+func (sdk *JuggleIMSdk) QryBlockUsers(userId string, limit int, offset string) (*QryBlockUsersResp, ApiCode, string, error) {
+	urlPath := fmt.Sprintf("/apigateway/users/blockusers/query?user_id=%s&limit=%d&offset=%s", userId, limit, offset)
+	resp := &QryBlockUsersResp{}
 	code, traceId, err := sdk.HttpCall(http.MethodGet, urlPath, nil, resp)
 	return resp, code, traceId, err
 }
