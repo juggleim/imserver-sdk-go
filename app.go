@@ -64,21 +64,3 @@ func (sdk *JuggleIMSdk) QryAppConnectSignKeys() (*ConnectSignKeysResp, ApiCode, 
 	code, traceId, err := sdk.HttpCall(http.MethodGet, urlPath, nil, resp)
 	return resp, code, traceId, err
 }
-
-func (sdk *JuggleIMSdk) QryAppInfo() (*AppInfo, ApiCode, string, error) {
-	urlPath := "/apigateway/apps/info"
-	resp := &AppInfo{}
-	code, traceId, err := sdk.HttpCall(http.MethodGet, urlPath, nil, resp)
-	return resp, code, traceId, err
-}
-
-func (sdk *JuggleIMSdk) ActiveApp(license string) (*AppInfo, ApiCode, string, error) {
-	urlPath := "/apigateway/apps/active"
-	resp := &AppInfo{}
-	code, traceId, err := sdk.HttpCall(http.MethodPost, urlPath, &ActiveAppReq{License: license}, resp)
-	return resp, code, traceId, err
-}
-
-func ActiveApp(apiUrl, license string) (*AppInfo, ApiCode, string, error) {
-	return NewJuggleIMSdk("", "", apiUrl).ActiveApp(license)
-}
