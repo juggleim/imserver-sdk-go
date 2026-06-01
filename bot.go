@@ -29,3 +29,9 @@ func (sdk *JuggleIMSdk) RegisterBot(bot BotInfo) (*UserRegResp, ApiCode, string,
 	code, traceId, err := sdk.HttpCall(http.MethodPost, urlPath, bot, resp)
 	return resp, code, traceId, err
 }
+
+func (sdk *JuggleIMSdk) UpdateBot(bot BotInfo) (ApiCode, string, error) {
+	urlPath := "/apigateway/bots/update"
+	code, traceId, err := sdk.HttpCall(http.MethodPost, urlPath, bot, nil)
+	return code, traceId, err
+}
