@@ -49,6 +49,17 @@ type TagConversReq struct {
 	Convers []*Conversation `json:"convers"`
 }
 
+type GlobalConverTagsReq struct {
+	ConverId         string    `json:"conver_id"`
+	ChannelType      int       `json:"channel_type"`
+	SubChannel       string    `json:"sub_channel"`
+	GlobalConverTags *[]string `json:"global_conver_tags,omitempty"`
+}
+
+type GlobalConverTagsResp struct {
+	GlobalConverTags []string `json:"global_conver_tags"`
+}
+
 func (sdk *JuggleIMSdk) ClearUnread(convers *Conversations) (ApiCode, string, error) {
 	urlPath := "/apigateway/convers/clearunread"
 	code, traceId, err := sdk.HttpCall(http.MethodPost, urlPath, convers, nil)
@@ -122,4 +133,17 @@ func (sdk *JuggleIMSdk) UnTagConvers(req TagConversReq) (ApiCode, string, error)
 	urlPath := "/apigateway/convers/tags/del"
 	code, traceId, err := sdk.HttpCall(http.MethodPost, urlPath, req, nil)
 	return code, traceId, err
+}
+
+func (sdk *JuggleIMSdk) SetGlobalConverTags(req GlobalConverTagsReq) (ApiCode, string, error) {
+	urlPath := "/apigateway/convers/globaltags/set"
+	code, traceId, err := sdk.HttpCall(http.MethodPost, urlPath, req, nil)
+	return code, traceId, err
+}
+
+func (sdk *JuggleIMSdk) GetGlobalConverTags(req GlobalConverTagsReq) (*GlobalConverTagsResp, ApiCode, string, error) {
+	urlPath := "/apigateway/convers/globaltags/get"
+	resp := &GlobalConverTagsResp{}
+	code, traceId, err := sdk.HttpCall(http.MethodPost, urlPath, req, resp)
+	return resp, code, traceId, err
 }
